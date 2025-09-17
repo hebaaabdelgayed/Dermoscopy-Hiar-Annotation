@@ -1,0 +1,5 @@
+{
+  "name": "Dermoscopic Hair Annotator",
+  "description": "An advanced tool for annotating dermoscopic images of hair and scalp. Users can upload an image, mark various features like vellus/terminal hairs and follicular units, and receive a detailed report with counts and statistics. The application supports zooming, brush size control, and exporting the annotated image with the results.",
+  "requestFramePermissions": []
+}
