@@ -18,6 +18,7 @@ const App: React.FC = () => {
   const [brushSize, setBrushSize] = useState(5);
   const [stats, setStats] = useState<Stats>({});
   const [patientId, setPatientId] = useState('');
+  const [patientName, setPatientName] = useState('');
   const [showAnnotations, setShowAnnotations] = useState(true);
 
   useEffect(() => {
@@ -36,6 +37,7 @@ const App: React.FC = () => {
       setAnnotations([]);
       setZoom(1);
       setPatientId('');
+      setPatientName('');
       setShowAnnotations(true);
 
       const img = new Image();
@@ -70,8 +72,8 @@ const App: React.FC = () => {
   
   const handleDownload = useCallback(() => {
     if (!image) return;
-    downloadAnnotatedImage(image, annotations, stats, naturalSize, patientId);
-  }, [image, annotations, stats, naturalSize, patientId]);
+    downloadAnnotatedImage(image, annotations, stats, naturalSize, patientId, patientName);
+  }, [image, annotations, stats, naturalSize, patientId, patientName]);
   
 
   const memoizedStats = useMemo(() => stats, [stats]);
@@ -101,6 +103,8 @@ const App: React.FC = () => {
               hasAnnotations={annotations.length > 0}
               patientId={patientId}
               setPatientId={setPatientId}
+              patientName={patientName}
+              setPatientName={setPatientName}
               showAnnotations={showAnnotations}
               setShowAnnotations={setShowAnnotations}
             />
