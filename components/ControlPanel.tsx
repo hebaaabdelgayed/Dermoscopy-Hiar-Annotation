@@ -16,6 +16,8 @@ interface ControlPanelProps {
   hasAnnotations: boolean;
   patientId: string;
   setPatientId: (id: string) => void;
+  patientName: string;
+  setPatientName: (name: string) => void;
   showAnnotations: boolean;
   setShowAnnotations: (show: boolean) => void;
 }
@@ -33,21 +35,36 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
   hasAnnotations,
   patientId,
   setPatientId,
+  patientName,
+  setPatientName,
   showAnnotations,
   setShowAnnotations,
 }) => {
   return (
     <div className="bg-gray-900/50 rounded-lg p-4 mb-4 flex flex-wrap items-center justify-between gap-4">
-      <div className="flex items-center gap-2">
-          <label htmlFor="patientId" className="text-sm font-medium text-gray-300">Patient ID:</label>
-          <input
-              id="patientId"
-              type="text"
-              value={patientId}
-              onChange={e => setPatientId(e.target.value)}
-              placeholder="Enter ID"
-              className="bg-gray-700 text-white rounded-md px-2 py-1 text-sm w-32 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all"
-          />
+      <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+              <label htmlFor="patientId" className="text-sm font-medium text-gray-300">Patient ID:</label>
+              <input
+                  id="patientId"
+                  type="text"
+                  value={patientId}
+                  onChange={e => setPatientId(e.target.value)}
+                  placeholder="Enter ID"
+                  className="bg-gray-700 text-white rounded-md px-2 py-1 text-sm w-32 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all"
+              />
+          </div>
+          <div className="flex items-center gap-2">
+              <label htmlFor="patientName" className="text-sm font-medium text-gray-300">Patient Name:</label>
+              <input
+                  id="patientName"
+                  type="text"
+                  value={patientName}
+                  onChange={e => setPatientName(e.target.value)}
+                  placeholder="Enter name"
+                  className="bg-gray-700 text-white rounded-md px-2 py-1 text-sm w-40 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all"
+              />
+          </div>
       </div>
       
       <div className="flex items-center gap-2 flex-wrap">

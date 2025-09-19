@@ -2,12 +2,21 @@
 import { Annotation, FeatureType, Stats } from '../types';
 import { FEATURES } from '../constants';
 
+// Function to sanitize patient name for safe filename usage
+const sanitizeForFilename = (name: string): string => {
+  return name
+    .replace(/[<>:"/\\|?*]/g, '') // Remove invalid filename characters
+    .replace(/\s+/g, '_') // Replace spaces with underscores
+    .trim();
+};
+
 export const downloadAnnotatedImage = (
   imageUrl: string,
   annotations: Annotation[],
   stats: Stats,
   naturalSize: { width: number; height: number },
-  patientId: string
+  patientId: string,
+  patientName?: string
 ) => {
   const canvas = document.createElement('canvas');
   const ctx = canvas.getContext('2d');
@@ -39,14 +48,23 @@ export const downloadAnnotatedImage = (
     });
 
     // Draw the results report
-    drawReport(ctx, stats, naturalSize.width, naturalSize.height, patientId);
+    drawReport(ctx, stats, naturalSize.width, naturalSize.height, patientId, patientName);
 
     // Trigger download
     const link = document.createElement('a');
     const timestamp = new Date().toISOString().replace(/:/g, '-');
-    const filename = patientId
-      ? `report-${patientId}-${timestamp}.png`
-      : `report-${timestamp}.png`;
+    
+    // Generate filename with priority: patientName > patientId > timestamp only
+    let filename: string;
+    if (patientName && patientName.trim()) {
+      const sanitizedName = sanitizeForFilename(patientName.trim());
+      filename = `report-${sanitizedName}-${timestamp}.png`;
+    } else if (patientId && patientId.trim()) {
+      filename = `report-${patientId}-${timestamp}.png`;
+    } else {
+      filename = `report-${timestamp}.png`;
+    }
+    
     link.download = filename;
     link.href = canvas.toDataURL('image/png');
     link.click();
@@ -54,7 +72,7 @@ export const downloadAnnotatedImage = (
   img.src = imageUrl;
 };
 
-const drawReport = (ctx: CanvasRenderingContext2D, stats: Stats, canvasWidth: number, canvasHeight: number, patientId: string) => {
+const drawReport = (ctx: CanvasRenderingContext2D, stats: Stats, canvasWidth: number, canvasHeight: number, patientId: string, patientName?: string) => {
     const vellusCount = stats[FeatureType.VELLUS_HAIR] || 0;
     const terminalCount = stats[FeatureType.TERMINAL_HAIR] || 0;
     const totalHairCount = vellusCount + terminalCount;
@@ -77,6 +95,7 @@ const drawReport = (ctx: CanvasRenderingContext2D, stats: Stats, canvasWidth: nu
 
     const reportLines = [
         `Patient ID: ${patientId || 'N/A'}`,
+        ...(patientName ? [`Patient Name: ${patientName}`] : []),
         '--- Analysis Report ---',
         `Total Hairs: ${totalHairCount}`,
         `Vellus Hairs: ${vellusCount} (${getPercentage(vellusCount, totalHairCount)})`,
